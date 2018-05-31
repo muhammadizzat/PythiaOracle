@@ -1,0 +1,25 @@
+<style>
+    .modal-contents {border: 2px solid #2c97de;}
+    .search{display: inline-block;}
+    .icon-primary {color : #2c97de; display: inline-block;}
+</style>
+        
+        
+        <div class="modal fade" id="edit_status" tabindex="-1" role="dialog" aria-labelledby="TitleLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-contents">
+                <div class="modal-header modal_styling">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&#xD7;</span></button>
+                        <h4 class="modal-title">Edit Status</h4>
+                </div>
+                <div class="modal-body modal_styling">
+                        {{form.status}}
+                </div>
+                <div class="modal-footer modal_styling">
+                    <button type="button" class="btn btn-primary" onclick="editStatus()">Edit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+        </div>

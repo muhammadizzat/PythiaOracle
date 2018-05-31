@@ -1,0 +1,326 @@
+{% extends 'oracle/base.html' %}
+{% block content %}
+<style>
+        html {
+            size: 21cm 29.7cm;
+            margin: 0mm 45mm 30mm 45mm; /* change the margins as you want them to be. */
+            
+        }
+    label {
+        font-weight: normal !important;
+    }
+    .form-content-left{
+        padding-left: 100px;
+    }
+    .form-content{
+        font-size: 20px !important;
+    }
+    .form-content-border{
+    border: 1px solid;
+    }
+    select, input:not([type]), input[type="date" i], input[type="email" i], input[type="number" i], input[type="password" i], input[type="tel" i], input[type="url" i], input[type="text" i]{
+        border-width: 0px;
+        border-bottom: 0px solid #000;
+        width: 100%;
+        padding: 0px;
+    }
+    #id_interview_date{
+        width: 60%;
+    }
+    #id_interviewer_name, #id_applicant{
+        width: 60%;
+        border-bottom: 1px solid
+    }
+    #id_interviewer_name, #id_applicant{
+        text-transform: uppercase;
+    }
+    .section-padding{
+        padding-top: 15px;
+    }
+
+    p{
+        text-align: justify;
+        padding-top: 10px;
+    }
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding-left: 0px;
+        overflow: hidden;
+      }
+      li {
+        float: left;
+        padding-left: 30px;
+        padding-right: 130px;
+    }
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+    #id_comments{
+        width: 100%;
+        height: 150px;
+    }
+    textarea {
+        resize: none;
+    }
+</style>
+<div class="content" style="margin-left: 0px">
+    <div class="container-fluid" style="padding-left: 0px;">
+        <form method="POST" enctype="multipart/form-data"  id="feedback_form" name="feedback_form">{% csrf_token %}
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-10 col-xs-12" style="padding: 0px; margin: 0px;">
+                    <img src="/media/ui/oracle_header.png" alt="" height="150" width="100%">
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-6 col-xs-12 form-content" style="padding: 0px; margin: 0px;">
+                    <h3>INTERVIEW CHECKLIST</h3>
+                </div>
+                <div class="col-lg-4 col-xs-12 form-content" style="padding: 0px; padding-top: 25px; margin: 0px;">
+                    <label style="display: inline-block;">Date :</label>
+                    {{form.interview_date}}
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-6 col-xs-12 form-content" style="padding: 0px; margin: 0px;">
+                    <label style="display: inline-block;">INTERVIEWEE NAME : </label>
+                    {{form.applicant}}
+                </div>
+                <div class="col-lg-4 col-xs-12 form-content" style="padding: 0px; margin: 0px;">
+                    <label style="display: inline-block;">INTERVIEWER :</label>
+                    {{form.interviewer_name}}
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-10 col-xs-12 form-content" style="padding: 0px; padding-top: 30px; margin: 0px;">
+                    <label>Interviewer: Please fill in the appropriate box and make comments that would be helpful for next interview arrangement to create awareness.. </label>
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <!-- START APPEARANCE -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>APPEARANCE</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Grooming</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.grooming}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Body Language</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.body_language}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-2 form-content form-content-border">
+                        <label><b>Eye Contact</b></label> 
+                    </div>
+                    <div class="col-lg-8 form-content form-content-border">
+                            {{form.eye_contact}}
+                    </div>
+                    <div class="col-lg-1"></div>
+                </div>
+            <!-- END APPEARANCE -->
+            <!-- START CHARACTERISTIC -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>CHARACTERISTIC</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Confidence</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.confidence}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Teamwork</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.teamwork}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Responsible</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.responsible}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Professional</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.professional}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Communication</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.communication}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Ability to Learn</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.ability_to_learn}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Punctuality</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.punctuality}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Qualification</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.qualification}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Skills</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.skills}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Creativity</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.creativity}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label style="font-size: 16px"><b>Knowledge on Company</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.knowledge_on_company}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label style="font-size: 17px"><b>Knowledge on Industry</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.knowledge_on_industry}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <!-- END CHARACTERISTIC -->
+            <!-- STARt OVERALL -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>OVERALL</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Evaluation</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                        {{form.evaluation}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <label style="font-size: 17px"><b>Additional Comments :</b></label> 
+                        {{form.comments}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="btn-toolbar pull-right">
+                <div class="btn-group" role="group" aria-label="...">
+                    <input class="btn btn-sm btn-success" type="submit" value="Submit"/>
+                </div>
+            </div>
+            <!-- END OVERALL -->
+        </form>
+    </div>
+</div>
+<script>
+
+    $('#id_interview_date').prop('readOnly', true);
+    $('#id_applicant').val({{applicant_id}});
+    $('#id_applicant').attr("disabled", true)
+    $('#feedback_form').submit(function() {    
+        $('#id_applicant').attr("disabled", false)
+        alert("Feedback Saved!");
+    });
+
+    
+</script>
+{% endblock %}

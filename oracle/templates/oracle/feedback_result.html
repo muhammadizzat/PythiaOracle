@@ -1,0 +1,336 @@
+{% extends 'oracle/base.html' %}
+{% block content %}
+<link rel="stylesheet" href="/static/third_party/jquery-contextMenu-2.4.5/jquery.contextMenu.css" />
+<script src="/static/third_party/kendo_UI/kendo_all_min.js"></script>
+<style>
+        html {
+            size: 21cm 29.7cm;
+            margin: 0mm 45mm 30mm 45mm; /* change the margins as you want them to be. */
+            
+        }
+    label {
+        font-weight: normal !important;
+    }
+    .form-content-left{
+        padding-left: 100px;
+    }
+    .form-content{
+        font-size: 20px !important;
+        min-height: 35px;
+    }
+    .form-content-border{
+    border: 1px solid;
+    }
+    select, input:not([type]), input[type="date" i], input[type="email" i], input[type="number" i], input[type="password" i], input[type="tel" i], input[type="url" i], input[type="text" i]{
+        border-width: 0px;
+        border-bottom: 0px solid #000;
+        width: 100%;
+        padding: 0px;
+    }
+    #id_interview_date{
+        width: 60%;
+    }
+    #id_interviewer_name, #id_applicant{
+        width: 60%;
+        border-bottom: 1px solid
+    }
+    .section-padding{
+        padding-top: 15px;
+    }
+
+    p{
+        text-align: justify;
+        padding-top: 10px;
+    }
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding-left: 0px;
+        overflow: hidden;
+      }
+      li {
+        float: left;
+        padding-left: 30px;
+        padding-right: 130px;
+    }
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+    #id_comments{
+        width: 100%;
+        height: 150px;
+    }
+    textarea {
+        resize: none;
+    }
+    #export_pdf{
+        right: 10px;
+        top: 115px;
+    }
+</style>
+<div id="feedback_result" class="content" style="margin-left: 0px">
+    {% for feedback in result_list %}
+    <div class="container-fluid" style="padding-left: 0px;">
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-10 col-xs-12" style="padding: 0px; margin: 0px;">
+                    <img src="/media/ui/oracle_header.png" alt="" height="150" width="100%">
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                    
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-6 form-content" style="padding: 0px; margin: 0px;">
+                    <h3>INTERVIEW CHECKLIST</h3>
+                </div>
+                <div class="col-lg-4 col-xs-12 form-content" style="padding: 0px; padding-top: 25px; margin: 0px;">
+                    <label style="display: inline-block;">Date :</label>
+                    {{feedback.interview_date}}
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-6 col-xs-12 form-content" style="padding: 0px; margin: 0px;">
+                    <label style="display: inline-block;">INTERVIEWEE NAME : </label>
+                    {% filter upper %}
+                    {{feedback.applicant}}
+                    {% endfilter %}
+                </div>
+                <div class="col-lg-4 col-xs-12 form-content" style="padding: 0px; margin: 0px;">
+                    <label style="display: inline-block;">INTERVIEWER :</label>
+                    {% filter upper %}
+                    {{feedback.interviewer_name}}
+                    {% endfilter %}
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-10 col-xs-12 form-content" style="padding: 0px; padding-top: 30px; margin: 0px;">
+                    <label>Interviewer: Please fill in the appropriate box and make comments that would be helpful for next interview arrangement to create awareness.. </label>
+                </div>
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+            <!-- START APPEARANCE -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>APPEARANCE</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Grooming</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_grooming_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Body Language</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_body_language_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-2 form-content form-content-border">
+                        <label><b>Eye Contact</b></label> 
+                    </div>
+                    <div class="col-lg-8 form-content form-content-border">
+                        {{feedback.get_eye_contact_display}}
+                    </div>
+                    <div class="col-lg-1"></div>
+                </div>
+            <!-- END APPEARANCE -->
+            <!-- START CHARACTERISTIC -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>CHARACTERISTIC</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Confidence</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_confidence_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Teamwork</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_teamwork_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Responsible</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_responsible_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Professional</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_professional_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Communication</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_communication_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Ability to Learn</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_ability_to_learn_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Punctuality</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_punctuality_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Qualification</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_qualification_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Skills</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_skills_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Creativity</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_creativity_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label style="font-size: 16px"><b>Knowledge on Company</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_knowledge_on_company_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label style="font-size: 17px"><b>Knowledge on Industry</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_knowledge_on_industry_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <!-- END CHARACTERISTIC -->
+            <!-- STARt OVERALL -->
+            <div class="row m-t-2 section-padding">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <labels><center><b>OVERALL</b></center></label> 
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2 form-content form-content-border">
+                    <label><b>Evaluation</b></label> 
+                </div>
+                <div class="col-lg-8 form-content form-content-border">
+                    {{feedback.get_evaluation_display}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="row m-t-2">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 form-content form-content-border">
+                    <label style="font-size: 17px"><b>Additional Comments :</b></label><br> 
+                        {{feedback.comments}}
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <!-- END OVERALL -->
+    </div>
+    {% endfor %}
+</div>
+<!--Context Menu-->
+<script type="text/javascript" src="/static/third_party/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu-2.4.5/jquery.contextMenu.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu-2.4.5/jquery.ui.position.min.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu-2.4.5/main.js"></script>
+<script>
+    $(document).contextMenu({
+        selector: '#feedback_result',
+        callback: function (menu_item_name, options) {
+            if (menu_item_name == "print_pdf") {
+                window.print();
+            }
+        },
+        items: {
+            "print_pdf": {name: "Export PDF/Print", icon: "fa-plus"}
+        }
+    })
+</script>
+{% endblock %}

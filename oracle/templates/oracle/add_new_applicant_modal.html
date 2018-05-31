@@ -1,0 +1,40 @@
+<style>
+        .modal-project {border: 2px solid primary;}
+        .hidden{
+        display:none
+        }
+        </style>
+        
+        <div class="modal fade " id="add_applicant" tabindex="-1" role="dialog"
+             aria-labelledby="TitleLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content modal-project">
+                    <div class="modal-header modal_styling">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&#xD7;</span></button>
+                        <h4 class="modal-title">Add Applicant</h4>
+                    </div>
+                    <form id="add_applicant_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="modal-body modal_styling">
+                                <div class="project-form-field inline_field">
+                                    <label>Applicant Name : </label><br>
+                                    {{ form.name }}
+                                </div>   
+                                <div class="project-form-field inline_field">
+                                    <label>Applicant Email : </label><br>
+                                    {{ form.applicant_email }}
+                                </div>
+                                <div class="project-form-field inline_field">
+                                    <label>Applicant Position : </label><br>
+                                    {{ form.position }}
+                                </div>
+                        </div>
+                        <div class="modal-footer modal_styling">
+                                <button type="button" class="btn btn-primary" onclick="addApplicant()">Add</button>
+                            <button type="button" class="btn blue darken-3 waves-effect waves-light" data-dismiss="modal">Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

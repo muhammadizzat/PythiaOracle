@@ -1,0 +1,770 @@
+{% extends 'oracle/base.html' %}
+{% block content %}
+<style>
+        html {
+            size: 21cm 29.7cm;
+            margin: 0mm 45mm 30mm 45mm; /* change the margins as you want them to be. */
+            
+        }
+    label {
+        font-weight: normal !important;
+    }
+    .form-content-left{
+        padding-left: 100px;
+    }
+    .form-content{
+        font-size: 20px !important;
+    }
+    .form-content-border{
+    border: 1px solid;
+    }
+    #id_available_joining_date_day, #id_spm_graduated_year_day, #id_spm_graduated_year_month, #id_highest_graduated_year_month, #id_highest_graduated_year_day, #id_professional_graduated_year_month, #id_professional_graduated_year_day{
+        display: none;
+    }
+    #id_available_joining_date_month{
+        width: 50%;
+    }
+    #id_available_joining_date_year{
+        width: 40%;
+    }
+    select, input:not([type]), input[type="date" i], input[type="email" i], input[type="number" i], input[type="password" i], input[type="tel" i], input[type="url" i], input[type="text" i]{
+        border-width: 0px;
+        border-bottom: 0px solid #000;
+        width: 100%;
+        padding: 0px;
+        text-transform: uppercase;
+    }
+    #id_reference_email_1, #id_reference_email_2, #id_portfolio_url, #id_portfolio_url_2, #id_portfolio_url_3{
+        text-transform: none;
+    }
+        #id_total_working_experience{
+        display: inline-block;
+        width: 10%;
+        border-bottom: 1px solid;
+    }
+    #id_disclaimer_name, #id_disclaimer_date{
+        display: inline-block;
+        width: 80%;
+    }
+    #id_other_information{
+        margin-bottom: 10px;
+    }
+    .section-padding{
+        padding-top: 15px;
+    }
+    #id_position, #id_applied_date{
+        width: 50%;
+    }
+    #id_note{
+        width: 100%;
+    }
+    p{
+        text-align: justify;
+        padding-top: 10px;
+    }
+    #agreement_checkbox{
+        top: 7px;
+        left: 10px;
+        height: 25px;
+        width: 25px;
+    }
+    #id_current_pay, #id_expected_pay{
+        width: 70%;
+    }
+    .font-color{
+        color : red
+    }
+    #id_highest_education_cert_copy, #id_payslip_or_graduation_letter{
+        padding-top: 10px;
+    }
+    textarea {
+        resize: none;
+    }
+</style>
+<div class="content" style="margin-left: 0px">
+    <div class="container-fluid" style="padding-left: 0px;">
+        <form method="POST" enctype="multipart/form-data"  id="application_form" name="application_form">{% csrf_token %}
+            <div class="row m-t-2">
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+                <div class="col-lg-10 col-xs-12" style="padding: 0px; margin: 0px;">
+                    <img src="/media/ui/oracle_header.png" alt="" height="150" width="100%">
+                    <h2><center>JOB APPLICATION FORM</center></h2>
+                    <div class="row" style="padding-top: 0px;">
+                            {{ form.position }}
+                            {{ form.applicant }}
+                        <div class="col-lg-6 form-content form-content-left">
+                                <label>Position applied for :</label>
+                                {{selected_applicant.position.position}}          
+                        </div>
+                        <div class="col-lg-6 form-content" style="text-align: right; padding-right: 100px;">
+                                <label style="display: inline-block;">Date :</label>
+                                {{ form.applied_date }}
+                        </div>        
+                    </div>
+                    <hr style="border-top: 7px solid #000;">
+                    <div class="row m-t-2">
+                        <div class="col-lg-7 form-content form-content-left">
+                            <p>Attention :<br>
+                            1. Please read this form carefully and fill it in using only CAPITAL LETTERS <br>
+                            2. Submit one passport sized photo taken recently<br>
+                            3. Certificates which support your application<br>
+                            4. Latest month pay slip<br>
+                            5. All question must be answered. If it is no applicable answer N/A<br>
+                        </div>
+                        <div class="col-lg-5 form-content" style="padding-left: 200px;">
+                            <div style="text-align: center;">
+                                <img src="/media/{{ selected_project.poster }}"  onerror="this.src='/media/default/default.gif'" width="150" height="200" >
+                                {{ form.photo }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border-top: 7px solid #000;">
+                    <!-- START INDIVIUAL PARTICULARS -->
+                    <div class="row m-t-2">
+                        <h2 class="form-content-left">1. <span style="border-bottom: 3px solid #000;">INDIVIDUAL PARTICULARS</span></h2>
+                        <br>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-6 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Name (as in NRIC) :</label><br>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-lg-4 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Commonly Known as :</label><br>
+                            {{ form.nick_name }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Current Address : </label><br>
+                            {{ form.address }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Age : </label><br>
+                            {{ form.age }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Gender : </label><br>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Marital Status : </label><br>
+                            {{ form.marital_status }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Nationality : </label><br>
+                            {{ form.nationality }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4 form-content form-content-border">
+                            <label id="passport_no" hidden>Passport No : </label>
+                            <label id="IC_no"><span class="font-color"><b>*</b></span>NRIC No : </label><br>
+                            {{ form.passport_ic }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Mobile Phone No : </label><br>
+                            {{ form.mobile_phone }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Contact No : </label><br>
+                            {{ form.contact_phone }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div id="foreigner_country_state" class="row m-t-2">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-5 form-content form-content-border" style="font-size: 17px !important; min-height: 63px;">
+                                <label><span class="font-color"><b>*</b></span>Are you currently living in Malaysia?</label><br>
+                                {{ form.country_live_in }}
+                            </div>
+                            <div class="col-lg-5 form-content form-content-border" style="font-size: 17px !important; min-height: 63px;">
+                                    <label><span class="font-color"><b>*</b></span>Which Country are you originated from?</label><br>
+                                    {{ form.country_originated_from }}
+                                </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-3 form-content form-content-border" style="font-size: 17px !important; min-height: 63px;">
+                            <label><span class="font-color"><b>*</b></span>Do you have medical condition?</label><br>
+                            {{ form.medical_condition }}
+                        </div>
+                        <div class="col-lg-7 form-content form-content-border">
+                            <label>If yes, please identify :</label><br>
+                            {{ form.medical_identify }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-3 form-content form-content-border" style="font-size: 17px !important; min-height: 63px;">
+                            <label><span class="font-color"><b>*</b></span>Do you have any police record?</label><br>
+                            {{ form.police_record }}
+                        </div>
+                        <div class="col-lg-7 form-content form-content-border">
+                            <label>If yes, please identify case involved :</label><br>
+                            {{ form.police_identify }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END INDIVIUAL PARTICULARS -->
+                    <!-- START EDUCATION AND TRAINING -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">2. <span style="border-bottom: 3px solid #000;">EDUCATION AND TRAINING</span></h2>
+                        <br>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;"></div>
+                        <div class="col-lg-4 form-content form-content-border">
+                            <label>Name of School / College / University</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 17px !important;">Level of Certification</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 17px !important;">Year of Graduated</label>
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div id="spm_section" class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            <label>SPM</label>
+                        </div>
+                        <div class="col-lg-4 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.spm_school_name }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.spm_certificate_level }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.spm_graduated_year }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            <label style="font-size: 18px !important;"><span class="font-color"><b>*</b></span>Highest Education</label>
+                        </div>
+                        <div class="col-lg-4 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.highest_education_name }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.highest_certificate_level }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.highest_graduated_year }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            <label>Others</label>
+                        </div>
+                        <div class="col-lg-4 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.professional_college_name }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.professional_certificate_level }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.professional_graduated_year }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Language and dialects you speaks :</label><br>
+                            {{ form.language }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END EDUCATION AND TRAINING -->
+                    <!-- START WORKING EXPERIENCE -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">3. <span style="border-bottom: 3px solid #000;">WORKING EXPERIENCE</span></h2>
+                        <br>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content">
+                            <label style="display: inline-block;"><span class="font-color"><b>*</b></span>Total working experience : </label> 
+                            {{ form.total_working_experience }}
+                            <label style="display: inline-block;"> years</label> 
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border" style="min-height: 35px;">
+                            <label><span class="font-color"><b>*</b></span>Portfolio / LinkedIN / Jobstreet URL (1) : </label><br>
+                            {{ form.portfolio_url }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border" style="min-height: 35px;">
+                            <label>Portfolio / LinkedIN / Jobstreet URL (2) : </label><br>
+                            {{ form.portfolio_url_2 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border" style="min-height: 35px;">
+                            <label>Portfolio / LinkedIN / Jobstreet URL (3) : </label><br>
+                            {{ form.portfolio_url_3 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Employer (1) : </label><br>
+                            {{ form.employer_1 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Job Title : </label><br>
+                            {{ form.job_title_1 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Date Employed : </label><br>
+                            {{ form.date_employed_1 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                                <label>Date End : </label><br>
+                            {{ form.date_end_1 }}
+                        </div>
+                        <div class="col-lg-1"></div>       
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <hr style="border-top: 2px solid #000; margin-top: 0px; margin-bottom: 0px;">
+                        </div>
+                        <div class="col-lg-1"></div>       
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Employer (2) : </label><br>
+                            {{ form.employer_2 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Job Title : </label><br>
+                            {{ form.job_title_2 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Date Employed : </label><br>
+                            {{ form.date_employed_2 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                                <label>Date End : </label><br>
+                            {{ form.date_end_2 }}
+                        </div>
+                        <div class="col-lg-1"></div>       
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <hr style="border-top: 2px solid #000; margin-top: 0px; margin-bottom: 0px;">
+                        </div>
+                        <div class="col-lg-1"></div>       
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Employer (3) : </label><br>
+                            {{ form.employer_3 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Job Title : </label><br>
+                            {{ form.job_title_3 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                            <label>Date Employed : </label><br>
+                            {{ form.date_employed_3 }}
+                        </div>
+                        <div class="col-lg-5 form-content form-content-border" style="min-height: 35px;">
+                                <label>Date End : </label><br>
+                            {{ form.date_end_3 }}
+                        </div>
+                        <div class="col-lg-1"></div>       
+                    </div>
+                    <!-- END WORKING EXPERIENCE -->
+                    <!-- START MISCELLANEOUS -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left" >4. <span style="border-bottom: 3px solid #000;">MISCELLANEOUS</span><br><br> <a style="font-size: 22px !important;" href="http://www.xe.com/currency/myr-malaysian-ringgit" target="_blank"><u style="padding-left: 10px;">CONVERT MYR HERE</u></a><br></h2>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Available Joining Date : </label> 
+                            {{ form.available_joining_date }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label style="font-size: 18px !important;"><span class="font-color"><b>*</b></span>Current Pay by Month (MYR) : </label> 
+                            <span>MYR : </span>{{ form.current_pay }}
+                        </div>
+                        <div class="col-lg-3 form-content form-content-border">
+                            <label style="font-size: 18px !important;"><span class="font-color"><b></b>*</span>Expected Pay by Month(MYR): </label><br>
+                            <span>MYR : </span>{{ form.expected_pay }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END MISCELLANEOUS -->
+                    <!-- START PERSONAL INTEREST -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">5. <span style="border-bottom: 3px solid #000;">PERSONAL INTEREST</span></h2>
+                        <br>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Hobbies : </label> 
+                            {{ form.hobbies }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Other information which help to consider your application : </label> 
+                            {{ form.other_information }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END PERSONAL INTEREST -->
+                    <!-- START REFERENCE -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">6. <span style="border-bottom: 3px solid #000;">REFERENCE (PREVIOUS/CURRENT SUPERIOR/LECTURER)</span></h2>
+                        <br>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Name</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Title</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>COMPANY</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>CONTACT</label>
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                                <label style="font-size: 18px !important;"><span class="font-color"><b>*</b></span>EMAIL ADDRESS</label>
+                            </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_name_1 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_title_1 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_company_1 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_contact_1 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_email_1 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_name_2 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_title_2 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_company_2 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_contact_2 }}
+                        </div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            {{ form.reference_email_2 }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END REFERENCE -->
+                    <!-- START ATTACHMENT -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">7. <span style="border-bottom: 3px solid #000;">ATTACHMENT</span></h2>
+                        <br>
+                        <h5 class="form-content-left"><span class="font-color"><b>Please upload file in PDF format only</b></span></h5>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label><span class="font-color"><b>*</b></span>Resume</label>
+                        </div>
+                        <div class="col-lg-8 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.resume_copy }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div> 
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 16px"><span class="font-color" style="font-size: 20px"><b>*</b></span>NRIC/Passport Page</label>
+                        </div>
+                        <div class="col-lg-8 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.passport_ic_copy }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 16px"><span class="font-color" style="font-size: 20px"><b>*</b></span>Highest Education Certificate</label>
+                        </div>
+                        <div class="col-lg-8 form-content form-content-border" style="min-height: 57px;">
+                            {{ form.highest_education_cert_copy }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 16px"><span class="font-color" style="font-size: 20px"><b>*</b></span>Payslip/Graduation Letter</label>
+                        </div>
+                        <div class="col-lg-8 form-content form-content-border" style="min-height: 57px;">
+                            {{ form.payslip_or_graduation_letter }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-2 form-content form-content-border">
+                            <label style="font-size: 16px">Recomendation Letter</label>
+                        </div>
+                        <div class="col-lg-8 form-content form-content-border" style="min-height: 35px;">
+                            {{ form.recommendation_letter }}
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <!-- END ATTACHMENT -->
+                    <h1 style="padding-top:70px;"><center>CONFIDENTIALITY AGREEMENT</center></h1>
+                    <div class="row m-t-2">
+                        <div class="col-lg-1"></div>
+
+                        <div class="col-lg-10 form-content">
+                            
+                            <p>The recipient named below (“<b>Recipient</b>”) wishes to visit or enter into discussion with Pythia Oracle Sdn Bhd
+                                    (“<b>LSA</b>”) and LSA consents to such visit or discussion on the condition that this Confidentiality Undertaking is executed
+                                    by the Recipient.</p>
+                            <p>The Recipient hereby agrees that any information learnt during or subsequent to his/her visit to, or discussion with, LSA
+                                    pertaining to games in development, technology, business strategy, finances, game ideas and any other information
+                                    likely to be unique to LSA shall be considered confidential information (“<b>Confidential Information</b>”).</p>  
+                            <p>The Recipient agrees to maintain the confidentiality of the Confidential Information, to prevent its unauthorised
+                                    dissemination and to use the Confidential Information only in accordance with the terms hereof. The obligations of
+                                    confidentiality and non-use in this agreement shall not apply to Confidential Information:</p>    
+                            <div style="padding-left: 60px; padding-right: 60px">
+                                <p>i) That was generally known when received; or becomes generally known through no fault of the Recipient;
+                                    or<br><br>
+                                    ii) That is or hereafter becomes lawfully obtainable from other sources; or<br><br>
+                                    iii) That has to be disclosed to regulatory authorities having jurisdiction over either party or as may otherwise
+                                    be required by law; or<br><br>
+                                    iv) Where such duty of confidentiality is waived in writing by LSA; or<br><br>
+                                    v) Where in the normal course of the Recipient’s business such Confidential Information comes into the
+                                    Recipient’s possession through sources not involving a breach of any Confidential Information that is the
+                                    subject of this agreement. In this case, the Recipient may use any Confidential Information he/she
+                                    receives, but should nevertheless endeavour to keep it confidential.</p>        
+                            </div>        
+                            <p>The Recipient further agrees not to use the Confidential Information for personal gain or for the account of a third party
+                            unless released from this agreement in writing by LSA.</p>
+                            <p>The Recipient agrees to return all Confidential Information including any documents, graphics, data, code and ROMs
+                            to LSA and to permanently delete all electronically stored copies of such Confidential Information immediately upon
+                            written or verbal request from LSA.</p>
+                            <p>The Recipient acknowledges that the unauthorised disclosure or use of the Confidential Information could cause
+                            significant harm to LSA, which may be difficult to quantify.</p>
+                            <p>This Agreement, which is subject to Malaysian law, is binding upon the parties from the date of signing hereof until
+                                    such time as no information disclosed pursuant to this agreement constitutes Confidential Information.</p>
+                        </div>       
+                            <div class="col-lg-1"></div>
+                    </div>
+                    <!-- START DISCLAIMER -->
+                    <div class="row m-t-2 section-padding">
+                        <h2 class="form-content-left">7. <span style="border-bottom: 3px solid #000;">DISCLAIMER</span></h2>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 form-content form-content-border">                
+                            <label class="checkbox-inline container"><input id="agreement_checkbox" type="checkbox"><span class="checkmark"></span> I hereby declare that above information given is true and I accept full responsibility for such information in the event that the information given is false then the company has the right to terminate my employment without assigning any reason whatsoever.<br><br>
+                                I hereby agreed to follow the confidentiality agreement stated above from the date of signing hereof until such time. </label> 
+                        </div>
+                        <div class="col-lg-1"></div>
+                        <br>
+                    </div>
+                    <div class="btn-toolbar pull-right">
+                        <div class="btn-group" role="group" aria-label="...">
+                            <input class="btn btn-sm btn-success" type="submit" value="Submit"/>
+                        </div>
+                    </div>
+                    <!-- END DISCLAIMER -->
+                <div class="col-lg-1" style="padding: 0px; margin: 0px;"></div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+        //PROP DEFAULT ATTRIBUTE FIELDS 
+        $('#id_applied_date').prop('readOnly', true);
+        $('#id_position').prop('readOnly', true);
+        $("#id_resume_copy").prop("accept", "application/pdf")
+        $("#id_passport_ic_copy").prop("accept", "application/pdf")
+        $("#id_highest_education_cert_copy").prop("accept", "application/pdf")
+        $("#id_payslip_or_graduation_letter").prop("accept", "application/pdf")
+        $("#id_recommendation_letter").prop("accept", "application/pdf")
+
+        //DEFAULT VALUE IN FIELDS
+        $('#id_applicant').val('{{selected_applicant.id}}');
+        $('#id_position').val('{{selected_applicant.position.id}}');
+        
+        applicant_visiblity = document.getElementById('id_applicant');
+        applicant_visiblity.style.visibility = 'hidden';
+        position_visiblity = document.getElementById('id_position');
+        position_visiblity.style.visibility = 'hidden';
+        
+        //PROVIDE DEFAULT VALUE FOR GRADUATION DATE FIELD
+        $('#id_spm_graduated_year_year').on('change', function() {
+            year_value = this.value
+            if (year_value == 0){
+                $("#id_spm_graduated_year_day").val("0");
+                $("#id_spm_graduated_year_month").val("0");
+            }
+            else{
+                $("#id_spm_graduated_year_day").val("1");
+                $("#id_spm_graduated_year_month").val("1");
+            }
+            
+        })
+
+        $('#id_highest_graduated_year_year').on('change', function() {
+            year_value = this.value
+            if (year_value == 0){
+                $("#id_highest_graduated_year_day").val("0");
+                $("#id_highest_graduated_year_month").val("0");
+            }
+            else{
+                $("#id_highest_graduated_year_day").val("1");
+                $("#id_highest_graduated_year_month").val("1");
+            }
+            
+        })
+
+        $('#id_professional_graduated_year_year').on('change', function() {
+            year_value = this.value
+            if (year_value == 0){
+                $("#id_professional_graduated_year_day").val("0");
+                $("#id_professional_graduated_year_month").val("0");
+            }
+            else{
+                $("#id_professional_graduated_year_day").val("1");
+                $("#id_professional_graduated_year_month").val("1");
+            }
+            
+        })
+
+        // REMOVE UNIQUE ID AFTER SUBMIT
+        var applicant_status = "{{selected_applicant.status}}"
+        $( document ).ready(function() {
+            if(applicant_status != "new"){
+                removeUniqueID();
+            }
+        });
+        
+
+        $('#application_form').submit(function(e) {
+            if ( document.getElementById('agreement_checkbox').checked === false ){
+                alert('Please accept the term & agreement.');
+                
+                return false;
+            }
+            else{     
+                if(applicant_status == "new"){
+                    updateNewApplicant();
+                    return true;
+                }  
+            }
+        });
+        function updateNewApplicant(){
+            $.ajax({
+                type: 'PUT',
+                url: '/api/oracle/applicant_update/{{selected_applicant.id}}/',
+                data: JSON.stringify({
+                    "name": $(id_name).val(),
+                    "applicant_email": "{{selected_applicant.applicant_email}}",
+                    "status": "submitted",
+                    "unique_id": "{{selected_applicant.unique_id}}",
+                    "submitted_date": $(id_applied_date).val()
+                }),
+                contentType: 'application/json',
+                success: function () {
+                    alert('Form Submitted!');
+                    return true;
+                },
+                error: function (err) {
+                    alert("AJAX error in request: " + JSON.stringify(err));
+                } 
+            })
+        }
+        function removeUniqueID(){
+            $.ajax({
+                type: 'PUT',
+                url: '/api/oracle/applicant_update/{{selected_applicant.id}}/',
+                data: JSON.stringify({
+                    "name": $(id_name).val(),
+                    "applicant_email": "{{selected_applicant.applicant_email}}",
+                    "unique_id": "",
+                }),
+                contentType: 'application/json',
+                success: function () {
+                    alert('Form already submitted! This URL will no longer valid!');
+                    window.close()
+                    location.reload();
+                },
+                error: function (err) {
+                    alert("AJAX error in request: " + JSON.stringify(err));
+                } 
+            })
+        }
+        $('#id_nationality').change(function(){
+        if($(this).val() == 'foreigner'){ 
+            $("#foreigner_country_state").show();
+            $("#passport_no").show();
+            $("#IC_no").hide();
+            $("#spm_section").hide();
+            
+        }
+        else{
+            $("#foreigner_country_state").hide(); 
+            $("#passport_no").hide();
+            $("#IC_no").show();
+            $("#spm_section").show();
+        }
+        });
+</script>
+{% endblock %}

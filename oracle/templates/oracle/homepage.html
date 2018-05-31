@@ -1,0 +1,459 @@
+{% extends 'oracle/base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/third_party/DataTables/DataTables-1.10.16/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/static/third_party/jquery-contextMenu/jquery.contextMenu.css" />
+
+<style>
+    .column-width{
+        width: 500px;
+    }
+    .applicant_name{
+        text-transform: uppercase;
+    }
+    .pagination>li>a{
+        position: inherit !important;
+    }
+    input[type=search] {
+        width: 130px !important;
+    }
+</style>
+<!-- ADD POSITION MODAL -->
+<div class="modal fade " id="add_position" tabindex="-1" role="dialog"
+             aria-labelledby="TitleLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content modal-project">
+                    <div class="modal-header modal_styling">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&#xD7;</span></button>
+                        <h4 class="modal-title">Add Position</h4>
+                    </div>
+                    <form id="add_position_form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="modal-body modal_styling">
+                                <div class="project-form-field inline_field">
+                                    <label>Position : </label><br>
+                                    {{ position_form.position }}
+                                </div>   
+                        </div>
+                        <div class="modal-footer modal_styling">
+                            <input class="btn btn-primary" type="submit" value="Add Position"/>
+                            <button type="button" class="btn blue darken-3 waves-effect waves-light" data-dismiss="modal">Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+<!-- END POSITION MODAL -->
+<!-- START Content -->
+{% include 'oracle/add_new_applicant_modal.html' %}
+{% include 'oracle/edit_status_modal.html' %}
+<div class="content" style="margin-left: 0px">
+    <div class="container-fluid" style="padding-left: 0px;">
+        <div class="row m-t-2">
+            <!-- START APPLICANT TABLE -->
+            <div class="col-lg-5 col-xs-12" style="padding: 0px; margin: 0px;">
+                <div class="panel panel-primary b-primary project_table_styling">
+                    <div class="panel-heading bg-primary-i">
+                        <h3 class="panel-title text-color">Applicant</h3>
+                    </div>
+                    <div class="table-responsive panel-body project_table_styling">
+                        <table id="applicant_table" class="display table table-hover table-responsive">
+                            <thead>
+                            <tr>
+                                <th class="all small text-muted text-uppercase"><strong>ID</strong></th>
+                                <th class="all small text-muted text-uppercase"><strong>Name</strong></th>
+                                <th class="small text-muted text-uppercase"><strong>Position</strong></th>
+                                <th class="small text-muted text-uppercase"><strong>Status</strong></th>
+                                <th class="small text-muted text-uppercase"><strong>Submitted Date</strong></th>
+                            </tr>
+                            </thead>
+                            <tbody id="applicant_tbody" class=""> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- END APPLICANT TABLE -->
+            <!-- START FEEDBACK TABLE -->
+            <div class="col-lg-7 col-xs-12" style="padding: 0px; margin: 0px;">
+                <div class="panel panel-primary b-primary project_table_styling">
+                    <div class="panel-heading bg-primary-i">
+                        <h3 class="panel-title text-color">Feedback</h3>
+                    </div>
+                    <div class="table-responsive panel-body project_table_styling">
+                        <table id="feedback_table" class="display table table-hover table-responsive">
+                            <thead>
+                            <tr>
+                                <th class="all small text-muted text-uppercase"><strong>ID</strong></th>
+                                <th class="all small text-muted text-uppercase"><strong>Interviewer</strong></th>
+                                <th class="small text-muted text-uppercase"><strong>Comments</strong></th>
+                            </tr>
+                            </thead>
+                            <tbody id="feedback_tbody" class=""> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- END FEEDBACK TABLE -->
+        </div>
+    </div>
+</div>
+
+<!--Context Menu-->
+<script type="text/javascript" src="/static/third_party/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu/jquery.contextMenu.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu/jquery.ui.position.min.js"></script>
+<script type="text/javascript" src="/static/third_party/jquery-contextMenu/main.js"></script>
+
+<script type="text/javascript"
+        src="/static/third_party/DataTables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/DataTables-1.10.16/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Buttons-1.5.1/js/buttons.bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Buttons-1.5.1/js/buttons.colVis.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Responsive-2.2.1/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Responsive-2.2.1/js/responsive.bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="/static/third_party/DataTables/Select-1.2.5/js/dataTables.select.min.js"></script>
+
+
+<script type="text/javascript" src="/static/third_party/md5/md5.js"></script>
+<script>
+    
+    var applicant_table = $('#applicant_table').DataTable({
+        dom: 'Blrftip',
+        JQueryUI: true,
+        bPaginate: true,
+        bLengthChange : false,
+        responsive: false,
+        select: {style: 'single'},
+        scrollY: '678px',
+        scrollCollapse: true,
+        buttons: [
+                    {
+                        extend: 'colvis',
+                        columns: ':gt(0)',
+                        text: 'Show',
+                        className: 'btn btn-default btn-outline btn-small'
+                    },
+                    {
+                        text: 'Send Applicant Form',
+                        action: function (e, dt, node, config) {
+                            $('#add_applicant').modal('show'); 
+                        },
+                        className: 'btn btn-default btn-outline btn-small'
+                    },
+                    {
+                        text: 'Add Position',
+                        action: function (e, dt, node, config) {
+                            $('#add_position').modal('show'); 
+                        },
+                        className: 'btn btn-default btn-outline btn-small'
+                    },
+                    {
+                        text: 'Refresh Table',
+                        action: function (e, dt, node, config) {
+                            applicant_table.ajax.reload();
+                        },
+                        className: 'btn btn-default btn-outline btn-small'
+                    }
+                ],
+        ajax: {
+            url: "/api/oracle/applicant_list/",
+            dataSrc: ''
+        },
+        columns: [
+                    {"data": "id", "class": "applicant_id id_padding-right "},
+                    {"data": "name", "class": "applicant_name",},
+                    {"data": "position.position", "class": "applicant_name",},
+                    {"data": "status", "class": "v-a-m ", "render": function (status, type, row) {
+                        return `<!--<div class="media media-auto">
+                                    <div class="media-left">
+                                        <div class="avatar">
+                                            <img src="/media/ui/file_status/${ status }.png" alt="" height="25px" width="25px">
+                                        </div>
+                                    </div>-->
+                                    <div class="media-body" style="width:40px;">
+                                        <span class="media-heading">${ status }</span>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                    {"data": "submitted_date", "class": "", "visible": true},
+        ]
+    })
+
+
+    // GET ATTACHMENT API
+    var attachment_details = []
+    function get_attachment_details(applicant_id) {
+        var attachment_details_json = $.ajax({
+            type: "GET",
+            url: '/api/oracle/applicant_attachment/' + applicant_id,
+            dataType: "application/json",
+            async: false
+        }).responseText;
+        return JSON.parse(attachment_details_json)[0];
+    }
+    function addApplicant(){
+        var selected_email = $(id_applicant_email).val()
+        var date = new Date();
+        var rng = selected_email + date
+        var unique_id = $.md5(rng);
+            $.ajax({
+                type: 'POST',
+                url: '/api/oracle/applicant_list/',
+                data: JSON.stringify({
+                    "name": $(id_name).val(),
+                    "applicant_email": $(id_applicant_email).val(),
+                    "position": $(id_position).val(),
+                    "status": "new",
+                    "unique_id": unique_id
+                }),
+                contentType: 'application/json',
+                success: function () {
+                    alert("Applicant Added!");
+                    $('#add_applicant').modal('hide');
+                    applicant_table.ajax.reload();
+                },
+                error: function (err) {
+                    alert("Please fill in all fields");
+                    console.log(err)
+                }  
+            })
+        
+    }
+    function editStatus() {
+        var selected_row = applicant_table.rows('.selected').data();
+        var applicant_id = selected_row[0].id
+        var applicant_name = selected_row[0].name
+        var applicant_email = selected_row[0].applicant_email
+        var selected_status = $('#id_status').find(":selected").val();
+        $.ajax({
+            type: 'PUT',
+            url: '/api/oracle/status_detail/' + applicant_id + '/',
+            data: JSON.stringify({"status": selected_status,
+                                  "name": applicant_name,
+                                  "applicant_email": applicant_email}),
+            contentType: 'application/json',
+            success: function () {
+                alert("Status Update!");
+                $('#edit_status').modal('hide');
+                applicant_table.ajax.reload();
+            },
+            error: function (err) {
+                alert("AJAX error in request: " + JSON.stringify(err));
+            }     
+        })
+
+    }
+    $('#applicant_table tbody').on( 'click', 'tr', function () {
+        var applicant_id = $(this).closest('tr').children('td.applicant_id').text();
+        load_feedback(applicant_id);
+    });
+    function load_feedback(applicant_id){
+            feedback_table = $('#feedback_table').DataTable({
+            dom: 'Blrftip',
+            JQueryUI: true,
+            bPaginate: true,
+            bLengthChange : false,
+            responsive: false,
+            select: {style: 'single'},
+            destroy: true,
+            scrollY: '678px',
+            scrollCollapse: true,
+            buttons: [
+                        {
+                            extend: 'colvis',
+                            columns: ':gt(0)',
+                            text: 'Show',
+                            className: 'btn btn-default btn-outline btn-small'
+                        },
+                        {
+                            text: 'Add',
+                            action: function (e, dt, node, config) {
+                                var selected_applicant = applicant_table.rows({selected: true}).data().pluck('id');
+                                applicant_id = selected_applicant[0];
+                                if(applicant_id == null){
+                                    alert('Please Select an Applicant to Add Feedback');
+                                }
+                                else{
+                                    open_feedback_form(applicant_id);              
+                                }    
+                            },
+                            className: 'btn btn-default btn-outline btn-small'
+                        },
+                        {
+                            text: 'Refresh Table',
+                            action: function (e, dt, node, config) {
+                                feedback_table.ajax.reload();
+                            },
+                            className: 'btn btn-default btn-outline btn-small'
+                        }
+                    ],
+            ajax: {
+                url: "/api/oracle/feedback_detail/"+ applicant_id +"/",
+                dataSrc: ''
+            },
+            columns: [
+                        {"data": "id", "class": "applicant_id id_padding-right "},
+                        {"data": "interviewer_name", "class": "interviewer_name",},
+                        {"data": "comments", "class": "", "visible": true},
+            ]
+        })
+    }
+    // GET FEEDBACK ID
+    var applicant_id = []
+    var feedback_id = []
+
+    $('#applicant_table tbody').on( 'click', 'tr', function () {   
+        selected_applicant = applicant_table.row( this ).data();
+        applicant_id = selected_applicant.id
+    });
+    $('#feedback_table tbody').on( 'click', 'tr', function () {   
+        selected_feedback = feedback_table.row( this ).data();
+        feedback_id = selected_feedback.id
+    });
+    // APPLICANT TABLE CONTEXT MENU
+    $(document).contextMenu({
+        selector: '#applicant_table td',
+        callback: function (menu_item_name, options) {
+            var selected_row = applicant_table.rows('.selected').data();
+            var attachment_details = get_attachment_details(applicant_id);
+            if (menu_item_name == "edit") {  
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to Edit Status');
+                }
+                else{
+                    $('#edit_status').modal('show');               
+                }
+            }
+            if (menu_item_name == "delete") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Form');
+                }
+                else{
+                    confirmation = confirm("Are you sure you want to remove the item?");
+                    if (confirmation) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/api/oracle/applicant_update/' + applicant_id + '/',
+                            success: function () {
+                                alert("Applicant Deleted");
+                                applicant_table.ajax.reload();
+                            },
+                            error: function (err) {
+                                alert("AJAX error in request: " + JSON.stringify(err));
+                                console.log(err)
+                            }     
+                        })
+                    }          
+                }
+            }
+            if (menu_item_name == "view_form") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Form');
+                }
+                else{
+                    window.open("/oracle/applicant_credential/" + applicant_id + "/",",toolbar=0,status=0", "width="+screen.availWidth+",height="+screen.availHeight);
+                }
+            }
+            if (menu_item_name == "view_resume") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Resume');
+                }
+                else{
+                    window.open(attachment_details['resume_copy'], '_blank');
+                }
+            }
+            if (menu_item_name == "view_portfolio") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Portfolio');
+                }
+                else{
+                    window.open(attachment_details['portfolio_url'], '_blank');
+                }
+            }
+            if (menu_item_name == "view_passport_ic") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Passport/IC');
+                }
+                else{
+                    window.open(attachment_details['passport_ic_copy'], '_blank');
+                }
+            }
+            if (menu_item_name == "view_certificate") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Applicant Certificate');
+                }
+                else{ 
+                    window.open(attachment_details['highest_education_cert_copy'], '_blank');
+                }
+            }
+            if (menu_item_name == "view_payslip") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Applicant Payslip/Graduation Letter');
+                }
+                else{ 
+                    window.open(attachment_details['payslip_or_graduation_letter'], '_blank');
+                }
+            }
+            if (menu_item_name == "view_recommendation") {
+                if(selected_row[0] == null){
+                    alert('Please Select an Applicant to View Applicant Recommendation Letter');
+                }
+                else{ 
+                    window.open(attachment_details['recommendation_letter'], '_blank');
+                }
+            }
+        },
+        items: {
+            "edit": {name: "Edit Status", icon: "fa-plus"},
+            "delete": {name: "Delete Entry", icon: "fa-minus"},
+            "view_form": {name: "View Applicant Form", icon: "fa-plus"},
+            "view_resume": {name: "View Applicant Resume", icon: "fa-plus"},
+            "view_portfolio": {name: "View Applicant Portfolio", icon: "fa-plus"},
+            "view_passport_ic": {name: "View Applicant Passport/IC", icon: "fa-plus"},
+            "view_certificate": {name: "View Applicant Certificate", icon: "fa-plus"},
+            "view_payslip": {name: "View Applicant Payslip", icon: "fa-plus"},
+            "view_recommendation": {name: "View Applicant Recommendation Letter", icon: "fa-plus"},
+        }
+    })
+    // FEEDBACK TABLE CONTEXT MENU
+    $(document).contextMenu({
+        selector: '#feedback_table td',
+        callback: function (menu_item_name, options) {
+            if (menu_item_name == "view_feedback") {
+                open_feedback_result(feedback_id);
+            }
+        },
+        items: {
+            "view_feedback": {name: "View Feedback Result", icon: "fa-plus"}
+        }
+    })
+    function open_feedback_form(applicant_id) {
+        window.open("/oracle/feedback_checklist/" + applicant_id + "/", ",toolbar=0,status=0", "width="+screen.availWidth+",height="+screen.availHeight);
+    }
+    function open_feedback_result(feedback_id) {
+        var selected_row = feedback_table.rows('.selected').data();
+        if(selected_row[0] == null){
+            alert('Please Select a Feedback to View First');
+        }
+        else{
+            window.open("/oracle/feedback_result/" + feedback_id + "/", ",toolbar=0,status=0", "width="+screen.availWidth+",height="+screen.availHeight);
+        }
+    }   
+
+
+</script>
+{% endblock %}
